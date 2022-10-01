@@ -35,7 +35,7 @@
 
 (defgeneric add (bloom-filter item) (:documentation "Add item to the bloom filter"))
 
-(defgeneric check (bloom-filter item) (:documentation "Check if item is on the bloom filter"))
+(defgeneric lookup (bloom-filter item) (:documentation "Check if item is on the bloom filter"))
 
 (defmethod %hash ((bloom-filter bloom-filter) hash-function item)
   (let ((hashed-item (funcall hash-function item)))
