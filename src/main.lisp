@@ -59,4 +59,10 @@
           (return)))))
 
 #+nil
-(setf b1 (make-instance 'bloom-filter))
+(defvar abloom-filter (make-instance 'bloom-filter :hash-functions '(knuth-hash dummy-hash other-dummy-hash)))
+
+#+nil
+(add abloom-filter 331137)
+
+#+nil
+(check abloom-filter 331137)
