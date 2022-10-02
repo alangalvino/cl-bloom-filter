@@ -65,10 +65,6 @@
 (defmethod %size ((bloom-filter bloom-filter))
   (length (hash-set bloom-filter)))
 
-(defmethod %hash ((bloom-filter bloom-filter) hash-function item)
-  (let ((hashed-item (funcall hash-function item)))
-    (floor (mod hashed-item (%size bloom-filter)))))
-
 (defmethod %set-bit ((bloom-filter bloom-filter) hashed-item)
   (setf (aref (hash-set bloom-filter) hashed-item) 1))
 
