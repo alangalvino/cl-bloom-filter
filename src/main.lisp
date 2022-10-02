@@ -2,23 +2,12 @@
   (:use :cl))
 (in-package :cl-bloom-filter)
 
-;;; Dummy Hash Functions
-
-(defun knuth-hash (i)
-  (* i (+ i 3)))
-
-(defun dummy-hash (i)
-  (* (* i 33) (+ i 33)))
-
-(defun other-dummy-hash (i)
-  (* (* i 59) (+ i 59)))
-
 ;;; Bloom Filter Class Definition
 
 (defclass bloom-filter ()
   ((hash-functions
     :initarg :hash-functions
-    :initform '(knuth-hash)
+    :initform '(sxhash)
     :accessor hash-functions)
    (size
     :initarg size
@@ -59,7 +48,7 @@
           (return)))))
 
 #+nil
-(defvar abloom-filter (make-instance 'bloom-filter :hash-functions '(knuth-hash dummy-hash other-dummy-hash)))
+(defvar abloom-filter (make-instance 'bloom-filter))
 
 #+nil
 (add abloom-filter 331137)
