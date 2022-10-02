@@ -5,7 +5,7 @@
 ;;; Bloom Filter Helper Functions
 
 ;; m  -> number of bits
-;; n  -> expected number of insertions
+;; n  -> number of elements
 ;; fp -> false positive rate
 ;;
 ;; Based on https://en.wikipedia.org/wiki/Bloom_filter#Probability_of_false_positives
@@ -14,7 +14,7 @@
 (defun %optimal-number-of-bits (n fp)
   (ceiling (- (/ (* n (log fp)) (* (log 2) (log 2))))))
 
-;; n -> expected number of insertions 
+;; n -> number of elements 
 ;; m -> number of bits
 ;; k -> number of hash functions
 ;;
@@ -24,6 +24,16 @@
 (defun %optimal-number-of-hash-functions (n m)
   (max 1 (round (* (/ m n) (log 2)))))
 
+;; n -> number of elements 
+;; m -> number of bits
+;; k -> number of hash functions
+;;
+;; Based on https://en.wikipedia.org/wiki/Bloom_filter#Probability_of_false_positives
+;; optimal(k) = (m/n)*ln(2)
+;;
+(defun %fp-rate (n m k)
+  (expt (- 1 (expt (exp 1) (- (/ (* k n) m)))) k))
+
 ;;; Bloom Filter Class Definition
 
 (defclass bloom-filter ()
@@ -31,10 +41,10 @@
     :initarg :capacity
     :initform 10000
     :accessor capacity)
-   (fp-rate
-    :initarg :fp-rate
+   (expected-fp-rate
+    :initarg :expected-fp-rate
     :initform 1/1000
-    :accessor fp-rate)
+    :accessor expected-fp-rate)
    (hash-function
     :initarg :hash-function
     :initform 'sxhash
@@ -42,12 +52,16 @@
    (hash-set
     :accessor hash-set)
    (number-of-hash-functions
-    :accessor number-of-hash-functions)))
+    :accessor number-of-hash-functions)
+   (number-of-elements
+    :initform 0
+    :accessor number-of-elements)))
 
-;; n  -> expected number of insertions 
+;; n  -> number of elements 
 ;; m  -> number of bits
 ;; k  -> number of hash functions
 ;; fp -> false positive rate
+;;
 (defmethod initialize-instance :after ((bloom-filter bloom-filter) &key)
   (let* ((n (capacity bloom-filter))
          (fp (fp-rate bloom-filter))
@@ -56,7 +70,12 @@
     (setf (slot-value bloom-filter 'number-of-hash-functions) k)
     (setf (slot-value bloom-filter 'hash-set) (make-array m :element-type 'bit))))
 
+(defmethod add :after ((bloom-filter bloom-filter) item)
+  (incf (slot-value bloom-filter 'number-of-elements)))
+
 ;;; Bloom Filter Methods
+
+(defgeneric effective-fp-rate (bloom-filter) (:documentation "Effective false positive rate"))
 
 (defgeneric add (bloom-filter item) (:documentation "Add item to the bloom filter"))
 
@@ -71,6 +90,16 @@
 (defmethod %get-bit ((bloom-filter bloom-filter) hashed-item)
   (aref (hash-set bloom-filter) hashed-item))
 
+;; n -> number of elements 
+;; m -> number of bits
+;; k -> number of hash functions
+;;
+(defmethod effective-fp-rate ((bloom-filter bloom-filter))
+  (let* ((k (number-of-hash-functions bloom-filter))
+         (m (%size bloom-filter))
+         (n (number-of-elements bloom-filter)))
+    (%fp-rate n m k)))
+
 (defmethod add ((bloom-filter bloom-filter) item)
   (let* ((number-of-hash-functions (number-of-hash-functions bloom-filter))
          (size (%size bloom-filter))
@@ -79,6 +108,7 @@
          (hash2 (funcall hash-function hash1)))
     (do* ((i 1 (+ i 1)))
          ((> i number-of-hash-functions) t)
+      ;; Using only two hash functions
       ;; Based on Less Hashing paper: https://www.eecs.harvard.edu/~michaelm/postscripts/rsa2008.pdf
       (let ((hashed-item (mod (abs (+ hash1 (* i hash2))) size)))      
         (%set-bit bloom-filter hashed-item)))))
@@ -91,6 +121,7 @@
          (hash2 (funcall hash-function hash1)))
     (do* ((i 1 (+ i 1)))
          ((> i number-of-hash-functions) t)
+      ;; Using only two hash functions
       ;; Based on Less Hashing paper: https://www.eecs.harvard.edu/~michaelm/postscripts/rsa2008.pdf
       (let ((hashed-item (mod (abs (+ hash1 (* i hash2))) size)))
         (if (equal 0 (%get-bit bloom-filter hashed-item))
