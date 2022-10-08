@@ -1,7 +1,7 @@
 (defpackage cl-bloom-filter
-  (:nicknames :bloom)
+  (:nicknames :bloom :bf)
   (:use :cl)
   (:export
-   :bloom-filter
+   :make-bloom-filter
    :add
    :lookup))
