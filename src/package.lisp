@@ -1,5 +1,5 @@
 (defpackage cl-bloom-filter
-  (:nicknames :bloom :bf)
+  (:nicknames :bf)
   (:use :cl)
   (:export
    :make-bloom-filter
