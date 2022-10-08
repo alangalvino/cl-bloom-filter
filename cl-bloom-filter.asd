@@ -5,7 +5,9 @@
   :depends-on ()
   :components ((:module "src"
                 :components
-                ((:file "main"))))
+                ((:file "package")
+                 (:file "helpers")
+                 (:file "main"))))
   :description ""
   :in-order-to ((test-op (test-op "cl-bloom-filter/tests"))))
 
