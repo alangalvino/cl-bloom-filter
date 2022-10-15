@@ -1,6 +1,6 @@
-# Cl-Bloom-Filter
+# cl-bloom-filter
 
-Plain Common Lisp Bloom Filter implementation (using 'sxhash); enjoy it!
+Plain Common Lisp bloom filter implementation, enjoy it!
 
 ## Usage
 
@@ -10,7 +10,7 @@ Creating a bloom-filter with default values:
 (defvar abloom-filter (bf:make-bloom-filter))
 ```
 
-Adding an item to the bloom-filter:
+Adding an item:
 
 ```lisp
 (bf:add abloom-filter 42)
