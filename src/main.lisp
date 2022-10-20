@@ -32,6 +32,11 @@
   (incf (slot-value bloom-filter 'number-of-elements)))
 
 (defun make-bloom-filter (&key (hash-function 'sxhash) (expected-fp-rate 1/1000) (expected-number-of-elements 10000))
+  (check-type hash-function symbol)
+  (check-type expected-fp-rate number)
+  (check-type expected-number-of-elements integer)
+  (assert (< 0 expected-fp-rate 1))
+  (assert (> expected-number-of-elements 0))
   (make-instance 'bloom-filter :hash-function hash-function
                                :expected-fp-rate expected-fp-rate
                                :expected-number-of-elements expected-number-of-elements))
