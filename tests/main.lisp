@@ -43,7 +43,14 @@
   (testing "should add an item to the bloom filter"
     (let ((item "just an item")
           (bloom-filter (bf:make-bloom-filter)))
-      (ok (equal (bf:add bloom-filter item) t)))))
+      (ok (equal (bf:add bloom-filter item) t))))
+  (testing "should increment number-of-element for each add call"
+    (let ((number-of-addings (+ 1 (random 10000)))
+          (bloom-filter (bf:make-bloom-filter)))
+      (do* ((i 1 (+ i 1)))
+           ((> i number-of-addings))
+        (bf:add bloom-filter i))
+      (ok (equal (bf:number-of-elements bloom-filter) number-of-addings)))))
 
 (deftest test-lookup-method
   (testing "should return t when item is present"
