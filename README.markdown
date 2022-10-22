@@ -1,4 +1,5 @@
 # cl-bloom-filter
+![tests workflow](https://github.com/alangalvino/cl-bloom-filter/workflows/.github/workflows/run-tests.yml/badge.svg)
 
 Just another Common Lisp bloom filter implementation, enjoy it!
 
