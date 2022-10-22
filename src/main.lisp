@@ -60,7 +60,7 @@
 (defmethod %get-bit ((bloom-filter bloom-filter) hashed-item)
   (aref (hash-set bloom-filter) hashed-item))
 
-(defmacro %for-each-item-digest (bloom-filter item &body body)
+(defmacro %do-for-each-item-digest (bloom-filter item &body body)
   `(let* ((number-of-hash-functions (number-of-hash-functions ,bloom-filter))
           (size (%size ,bloom-filter))
           (hash-function (hash-function ,bloom-filter))
@@ -82,11 +82,11 @@
     (%fp-rate n m k)))
 
 (defmethod add ((bloom-filter bloom-filter) item)
-  (%for-each-item-digest bloom-filter item
+  (%do-for-each-item-digest bloom-filter item
     (%set-bit bloom-filter item-digest)))
 
 (defmethod lookup ((bloom-filter bloom-filter) item)
-  (%for-each-item-digest bloom-filter item 
+  (%do-for-each-item-digest bloom-filter item
     (if (equal 0 (%get-bit bloom-filter item-digest))
         (return))))
 
