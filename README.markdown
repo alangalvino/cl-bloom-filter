@@ -1,6 +1,6 @@
 # cl-bloom-filter
 
-Plain Common Lisp bloom filter implementation, enjoy it!
+Just another Common Lisp bloom filter implementation, enjoy it!
 
 ## Usage
 

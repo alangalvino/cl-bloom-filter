@@ -31,11 +31,11 @@
 (defmethod add :after ((bloom-filter bloom-filter) item)
   (incf (slot-value bloom-filter 'number-of-elements)))
 
-(defun make-bloom-filter (&key (hash-function 'sxhash) (expected-fp-rate 1/1000) (expected-number-of-elements 10000))
+(defun make-bloom-filter (&key (hash-function 'sxhash) (expected-fp-rate 1/100) (expected-number-of-elements 10000))
   (check-type hash-function symbol)
   (check-type expected-fp-rate number)
   (check-type expected-number-of-elements integer)
-  (assert (< 0 expected-fp-rate 1))
+  (assert (< 0 expected-fp-rate 1.0))
   (assert (> expected-number-of-elements 0))
   (make-instance 'bloom-filter :hash-function hash-function
                                :expected-fp-rate expected-fp-rate
@@ -68,7 +68,7 @@
           (hash2 (funcall hash-function hash1)))
      (do* ((i 1 (+ i 1)))
           ((> i number-of-hash-functions) t)
-       ;; using only two hash functions
+       ;; using only two hash functions for performance purposes
        ;; based on Less Hashing paper: https://www.eecs.harvard.edu/~michaelm/postscripts/rsa2008.pdf
        (let ((item-digest (mod (abs (+ hash1 (* i hash2))) size)))      
          ,@body))))
