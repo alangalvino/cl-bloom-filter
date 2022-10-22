@@ -18,6 +18,8 @@
                "rove")
   :components ((:module "tests"
                 :components
-                ((:file "main"))))
+                ((:file "package")
+                 (:file "main")
+                 (:file "helpers"))))
   :description "Test system for cl-bloom-filter"
   :perform (test-op (op c) (symbol-call :rove :run c)))

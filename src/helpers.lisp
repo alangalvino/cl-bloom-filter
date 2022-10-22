@@ -19,6 +19,5 @@
 
 ;; fp = (1 - (e ^ (- (k * n) / m))^k 
 (defun %fp-rate (n m k)
-  
   (expt (- 1 (expt (exp 1) (- (/ (* k n) m)))) k))
 
