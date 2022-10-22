@@ -4,27 +4,18 @@ Just another Common Lisp bloom filter implementation, enjoy it!
 
 ## Usage
 
-Creating a bloom-filter with default values:
+Basic usage:
 
 ```lisp
 (defvar abloom-filter (bf:make-bloom-filter))
-```
 
-Adding an item:
-
-```lisp
+;; adding an item
 (bf:add abloom-filter 42)
-```
 
-Checking if an item is member of the bloom-filter:
-
-```lisp
+;; checking if an item is member
 (bf:lookup abloom-filter 42)
-```
 
-Asking what's the current false positive rate:
-
-```lisp
+;; asking the current false positie rate
 (bf:effective-fp-rate abloom-filter)
 ```
 
