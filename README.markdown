@@ -1,5 +1,6 @@
 # cl-bloom-filter
-![tests workflow](https://github.com/alangalvino/cl-bloom-filter/workflows/.github/workflows/run-tests.yml/badge.svg)
+![run-tests workflow](https://github.com/alangalvino/cl-bloom-filter/workflows/.github/workflows/run-tests.yml/badge.svg)
+![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)
 
 Just another Common Lisp bloom filter implementation, enjoy it!
 
