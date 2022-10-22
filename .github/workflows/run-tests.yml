@@ -1,0 +1,11 @@
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: A job to run Common Lisp tests
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Run tests (Common Lisp Rove)
+      uses: alangalvino/github-actions-cl-rove@v0.0.2
