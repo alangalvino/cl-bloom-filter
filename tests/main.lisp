@@ -56,9 +56,36 @@
   (testing "should return t when item is present"
     (let* ((item "just an item")
            (bloom-filter (bf:make-bloom-filter)))
+      (ok (equal (bf:lookup bloom-filter item) nil))
       (bf:add bloom-filter item)
       (ok (equal (bf:lookup bloom-filter item) t))))
   (testing "should return nil when item is not present"
     (let ((item "just an item")
           (bloom-filter (bf:make-bloom-filter)))
       (ok (equal (bf:lookup bloom-filter item) nil)))))
+
+(deftest test-bloom-filter-fp-rate
+  (testing "should keep expected fp rate when checking for random itens"
+    (let* ((number-of-collisions 0)
+           (number-of-elements 10000)
+           (bloom-filter (bf:make-bloom-filter :expected-number-of-elements number-of-elements)))
+      (labels ((random-4-digits () (+ 10000 (random most-positive-fixnum)))
+               (uuid-gen () (format nil "~4x-~4x-~4x-~4x"
+                                    (random-4-digits)
+                                    (random-4-digits)
+                                    (random-4-digits)
+                                    (random-4-digits))))
+        ;; adding itens
+        (do* ((i 1 (+ i 1)))
+             ((> i number-of-elements))
+          (bf:add bloom-filter (uuid-gen)))
+        ;; lookup for random itens
+        (do* ((i 1 (+ i 1)))
+             ((> i number-of-elements))
+          (if (bf:lookup bloom-filter (uuid-gen))
+              (setf number-of-collisions (+ 1 number-of-collisions))))
+        (let ((fp-rate (/ number-of-collisions number-of-elements))
+              (expected-fp-rate (expected-fp-rate bloom-filter)))
+          ;; assuming a 35% error margin
+          ;; it's a higher error margin because my uuid-gen and hash-function are not as random as it should be
+          (ok (< fp-rate (* expected-fp-rate 1.35))))))))
