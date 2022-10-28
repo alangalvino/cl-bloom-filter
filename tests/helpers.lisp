@@ -7,7 +7,7 @@
 (defun float-equal (a b &optional (precision 1s-6))
   (< (- a (+ b single-float-epsilon)) precision))
 
-;; magic numbers in these tests were calculated via https://hur.st/bloomfilter
+;;; Magic numbers in these tests were calculated via https://hur.st/bloomfilter
 
 (deftest test-optimal-number-of-bits
   (testing "should be 0 when number of elements is 0"
